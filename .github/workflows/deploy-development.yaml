@@ -23,7 +23,7 @@ jobs:
 
   develop-deploy-job:
     needs: "develop-build-job"
-    environment: "Development"
+    environment: "development"
     permissions:
       pages: write
       id-token: write
