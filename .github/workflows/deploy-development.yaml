@@ -1,39 +1,36 @@
-name: Deploy to GitHub Pages
-
-on:
+name: wf-dvelop-deploy
+on: 
   push:
     branches:
       - develop
-
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
-  build:
-    name: Build Job
+  develop-build-job:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Install dependencies
-        run: npm install parcel
-      - name: Build website
-        run: npx parcel build src/index.html
-      - name: Upload artifact
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Build Website With Parcel 
+        run: |
+          npx parcel build "./src/index.html" --dist-dir "./dev" --public-url "./"
+
+      - name: Upload Build Artifacts
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: "./dev"
+          name: "develop-artifact"
 
-  deploy:
-    name: Deploy Job
-    needs: build
+
+  develop-deploy-job:
+    needs: "develop-build-job"
+    environment: "Development"
+    permissions:
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
-    environment:
-      name: development
     steps:
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+      - name: Deploy Artifacts on GH Pages 
+        uses: actions/deploy-pages@v4 
+        with: 
+          artifact_name: "develop-artifact"
+          token: ${{github.token}}
