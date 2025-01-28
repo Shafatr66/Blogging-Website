@@ -5,6 +5,10 @@ on:
     branches:
       - develop
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     name: Build Job
@@ -28,6 +32,8 @@ jobs:
     name: Deploy Job
     needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: development
     steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
