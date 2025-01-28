@@ -1,37 +1,19 @@
-name: PR Validation
-
+name: wf-develop-pr
 on:
   pull_request:
     branches:
-      - develop
-
+      - develop 
 jobs:
-  lint:
-    name: Linting Job
+  develop-pr-job:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Install dependencies
-        run: npm install htmlhint stylelint
-      - name: Lint HTML
-        run: npx htmlhint src/**/*.html
-      - name: Lint CSS
-        run: npx stylelint "styles/**/*.css"
+      - name: Checkout Repo
+        uses: actions/checkout@v3
 
-  build:
-    name: Build Job
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
-      - name: Install dependencies
-        run: npm install parcel
-      - name: Build website
-        run: npx parcel build src/index.html
+      - name: Lint HTML and CSS
+        run: |
+          npx htmlhint "**/*.html"
+          npx stylelint "**/*.css"
+
+      - name: Build Website
+        run: npx parcel build "./src/index.html" --dist-dir "./dev" --public-url "/Blogging-Website/"
